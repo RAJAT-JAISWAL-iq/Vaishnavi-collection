@@ -73,5 +73,18 @@ footer{padding:20px;text-align:center;background:#32111a;color:#e9d9c9;font:12px
 </main>
 <footer>© 2026 Vaishnavi Collection. All rights reserved.</footer>
 <a class="wa" href="https://wa.me/917388956709?text=Namaste%2C%20Vaishnavi%20Collection%20ke%20products%20dikhaiye." target="_blank" rel="noopener">WhatsApp Us</a>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://ahdxxpxuhjzspnigdlml.supabase.co";
+const SUPABASE_KEY = "sb_publishable_k--ZCWGAuot21H_um2P_YQ_YQcQlbPI";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+console.log("Vaishnavi Collection connected to Supabase!");
+</script>
 </body>
 </html>
