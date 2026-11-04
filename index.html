@@ -179,7 +179,44 @@ async function checkAdminSession() {
    document.getElementById("admin-dashboard").style.display = "block"; 
   }
 }
+async function addProduct() {
+  const name = document.getElementById("product-name").value.trim();
+  const price = Number(document.getElementById("product-price").value);
+  const description = document.getElementById("product-description").value.trim();
+  const category = document.getElementById("product-category").value.trim();
+  const message = document.getElementById("product-message");
 
+  if (!name || !price || !category) {
+    message.textContent = "Please enter name, price and category.";
+    return;
+  }
+
+  message.textContent = "Saving product...";
+
+  const { error } = await supabaseClient
+    .from("products")
+    .insert({
+      name: name,
+      price: price,
+      description: description,
+      category: category,
+      is_active: true
+    });
+
+  if (error) {
+    message.textContent = "Error: " + error.message;
+    return;
+  }
+
+  message.textContent = "Product added successfully!";
+
+  document.getElementById("product-name").value = "";
+  document.getElementById("product-price").value = "";
+  document.getElementById("product-description").value = "";
+  document.getElementById("product-category").value = "";
+
+  await loadProducts();
+}
 window.addEventListener("DOMContentLoaded", checkAdminSession);
 
 </script>
