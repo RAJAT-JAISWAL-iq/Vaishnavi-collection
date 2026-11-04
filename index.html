@@ -135,21 +135,8 @@ card.prepend(img);
 
 loadProducts();
 async function adminLogin() {
-  async function checkAdminSession() {
-  const { data: { session } } =
-    await supabaseClient.auth.getSession();
-
-  if (session) {
-    document.getElementById("login-message").textContent =
-      "Admin session active!";
-
-    document.getElementById("admin-email").style.display = "none";
-    document.getElementById("admin-password").style.display = "none";
-    document.querySelector("#admin-login button").style.display = "none";
-  }
-}
-
-window.addEventListener("DOMContentLoaded", checkAdminSession);
+  
+async function adminLogin() {
   const email = document.getElementById("admin-email").value;
   const password = document.getElementById("admin-password").value;
   const message = document.getElementById("login-message");
@@ -167,9 +154,24 @@ window.addEventListener("DOMContentLoaded", checkAdminSession);
   }
 
   message.textContent = "Admin login successful!";
+  await checkAdminSession();
 }
-  
 
+async function checkAdminSession() {
+  const { data: { session } } =
+    await supabaseClient.auth.getSession();
+
+  if (session) {
+    document.getElementById("login-message").textContent =
+      "Admin session active!";
+
+    document.getElementById("admin-email").style.display = "none";
+    document.getElementById("admin-password").style.display = "none";
+    document.querySelector("#admin-login button").style.display = "none";
+  }
+}
+
+window.addEventListener("DOMContentLoaded", checkAdminSession);
 
 </script>
   <section id="admin-login">
