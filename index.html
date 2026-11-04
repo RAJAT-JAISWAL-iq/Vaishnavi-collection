@@ -119,7 +119,9 @@ async function loadProducts() {
 
     if (product.image_url) {
       const img = document.createElement("img");
-      img.src = product.image_url;
+      img.onerror = function() {
+  console.log("Image failed to load");
+};
       img.alt = product.name;
       card.prepend(img);
     }
