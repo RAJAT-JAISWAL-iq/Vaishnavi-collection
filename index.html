@@ -79,20 +79,59 @@ const supabaseClient = window.supabase.createClient(
   SUPABASE_KEY
 );
 
-async function testConnection() {
+
+async function loadProducts() {
+  const container = document.getElementById("product-grid");
+
   const { data, error } = await supabaseClient
     .from("products")
     .select("*")
-    .limit(1);
+    .eq("is_active", true);
 
   if (error) {
-    console.error("Connection error:", error.message);
-  } else {
-    console.log("Supabase database connected successfully!");
+    container.textContent = "Products could not be loaded.";
+    console.error(error.message);
+    return;
   }
+
+  if (!data || data.length === 0) {
+    container.textContent = "No products available yet.";
+    return;
+  }
+
+  container.innerHTML = "";
+
+  data.forEach(product => {
+    const card = document.createElement("article");
+    card.className = "product";
+
+    const name = document.createElement("h3");
+    name.textContent = product.name;
+
+    const price = document.createElement("p");
+    price.textContent = "₹" + product.price;
+
+    const description = document.createElement("p");
+    description.textContent = product.description || "";
+
+    card.append(name, price, description);
+
+    if (product.image_url) {
+      const img = document.createElement("img");
+      img.src = product.image_url;
+      img.alt = product.name;
+      card.prepend(img);
+    }
+
+    container.appendChild(card);
+  });
 }
 
-testConnection();
+loadProducts();
+
+  
+
+
 </script>
 </body>
 </html>
