@@ -176,6 +176,7 @@ async function checkAdminSession() {
     document.getElementById("admin-email").style.display = "none";
     document.getElementById("admin-password").style.display = "none";
     document.querySelector("#admin-login button").style.display = "none";
+   document.getElementById("admin-dashboard").style.display = "block"; 
   }
 }
 
@@ -190,5 +191,20 @@ window.addEventListener("DOMContentLoaded", checkAdminSession);
   <p id="login-message"></p>
 </section>
   <p style="color:red;font-size:24px;">TEST PAGE</p>
+<section id="admin-dashboard" style="display:none; padding:30px;">
+  <h2>Vaishnavi Collection Admin Dashboard</h2>
+  <h3>Add New Product</h3>
+
+  <input type="text" id="product-name" placeholder="Product Name">
+  <input type="number" id="product-price" placeholder="Price">
+
+  <textarea id="product-description" placeholder="Product Description"></textarea>
+
+  <input type="text" id="product-category" placeholder="Category">
+
+  <button onclick="addProduct()">Add Product</button>
+
+  <p id="product-message"></p>
+</section>
 </body>
 </html>
