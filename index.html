@@ -82,6 +82,7 @@ const supabaseClient = window.supabase.createClient(
 
 async function loadProducts() {
   const container = document.getElementById("product-grid");
+  container.textContent = "JavaScript is running...";
 
   const { data, error } = await supabaseClient
     .from("products")
