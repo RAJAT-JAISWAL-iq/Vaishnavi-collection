@@ -90,7 +90,7 @@ async function loadProducts() {
     .eq("is_active", true);
 
   if (error) {
-    container.textContent = "Products could not be loaded.";
+    container.textContent = "Supabase error: " + error.message;
     console.error(error.message);
     return;
   }
