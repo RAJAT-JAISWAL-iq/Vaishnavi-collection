@@ -218,7 +218,13 @@ async function loadAdminProducts() {
       <p>Status: ${product.is_active ? "Active" : "Hidden"}</p>
     `;
 const toggleButton = document.createElement("button");
+const toggleButton = document.createElement("button");
 
+// YAHAN EDIT BUTTON KA CODE PASTE KARO
+
+toggleButton.textContent = product.is_active
+  ? "Hide Product"
+  : "Restore Product";
 toggleButton.textContent = product.is_active
   ? "Hide Product"
   : "Restore Product";
@@ -242,7 +248,44 @@ item.appendChild(toggleButton);
     list.appendChild(item);
   });
 }
+async function editProduct(product) {
+  const name = prompt("Enter new product name:", product.name);
+  if (name === null) return;
 
+  const price = prompt("Enter new price:", product.price);
+  if (price === null) return;
+
+  const description = prompt("Enter new description:", product.description || "");
+  if (description === null) return;
+
+  const category = prompt("Enter new category:", product.category || "");
+  if (category === null) return;
+
+  if (!name.trim() || !category.trim() || !Number(price) || Number(price) <= 0) {
+    alert("Please enter valid product details.");
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from("products")
+    .update({
+      name: name.trim(),
+      price: Number(price),
+      description: description.trim(),
+      category: category.trim()
+    })
+    .eq("id", product.id);
+
+  if (error) {
+    alert("Update error: " + error.message);
+    return;
+  }
+
+  alert("Product updated successfully!");
+
+  await loadAdminProducts();
+  await loadProducts();
+}
 async function addProduct() {
   const name = document.getElementById("product-name").value.trim();
   const price = Number(document.getElementById("product-price").value);
