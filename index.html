@@ -217,7 +217,28 @@ async function loadAdminProducts() {
       <p>Category: ${product.category}</p>
       <p>Status: ${product.is_active ? "Active" : "Hidden"}</p>
     `;
+const toggleButton = document.createElement("button");
 
+toggleButton.textContent = product.is_active
+  ? "Hide Product"
+  : "Restore Product";
+
+toggleButton.onclick = async function() {
+  const { error } = await supabaseClient
+    .from("products")
+    .update({ is_active: !product.is_active })
+    .eq("id", product.id);
+
+  if (error) {
+    alert("Error: " + error.message);
+    return;
+  }
+
+  await loadAdminProducts();
+  await loadProducts();
+};
+
+item.appendChild(toggleButton);
     list.appendChild(item);
   });
 }
