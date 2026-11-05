@@ -184,6 +184,7 @@ async function addProduct() {
   const price = Number(document.getElementById("product-price").value);
   const description = document.getElementById("product-description").value.trim();
   const category = document.getElementById("product-category").value.trim();
+  const imageFile = document.getElementById("product-image").files[0];
   const message = document.getElementById("product-message");
 
   if (!name || !price || !category) {
@@ -193,6 +194,30 @@ async function addProduct() {
 
   message.textContent = "Saving product...";
 
+  let imageUrl = null;
+
+  if (imageFile) {
+    const filePath = "products/" + Date.now() + "-" +
+      imageFile.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+
+    const { error: uploadError } = await supabaseClient
+      .storage
+      .from("Product -image")
+      .upload(filePath, imageFile);
+
+    if (uploadError) {
+      message.textContent = "Image upload error: " + uploadError.message;
+      return;
+    }
+
+    const { data: imageData } = supabaseClient
+      .storage
+      .from("Product -image")
+      .getPublicUrl(filePath);
+
+    imageUrl = imageData.publicUrl;
+  }
+
   const { error } = await supabaseClient
     .from("products")
     .insert({
@@ -200,6 +225,7 @@ async function addProduct() {
       price: price,
       description: description,
       category: category,
+      image_url: imageUrl,
       is_active: true
     });
 
@@ -214,9 +240,11 @@ async function addProduct() {
   document.getElementById("product-price").value = "";
   document.getElementById("product-description").value = "";
   document.getElementById("product-category").value = "";
+  document.getElementById("product-image").value = "";
 
   await loadProducts();
 }
+  
 window.addEventListener("DOMContentLoaded", checkAdminSession);
 
 </script>
