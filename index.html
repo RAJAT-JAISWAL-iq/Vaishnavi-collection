@@ -151,7 +151,6 @@ async function adminLogin() {
 
   message.textContent = "Logging in...";
   alert("Login button is working!");
-alert("Login button is working!");
   const { data, error } = await supabaseClient.auth.signInWithPassword({
     email: email,
     password: password
