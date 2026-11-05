@@ -217,6 +217,14 @@ async function loadAdminProducts() {
       <p>Category: ${product.category}</p>
       <p>Status: ${product.is_active ? "Active" : "Hidden"}</p>
     `;
+    const editButton = document.createElement("button");
+editButton.textContent = "Edit Product";
+
+editButton.onclick = function() {
+  editProduct(product);
+};
+
+item.appendChild(editButton);
 const toggleButton = document.createElement("button");
 
 // YAHAN EDIT BUTTON KA CODE PASTE KARO
