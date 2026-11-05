@@ -181,8 +181,7 @@ async function checkAdminSession() {
     await loadAdminProducts();
   }
 }
-async function addProduct() {
-  async function loadAdminProducts() {
+async function loadAdminProducts() {
   const list = document.getElementById("admin-product-list");
 
   list.innerHTML = "Loading products...";
@@ -222,7 +221,8 @@ async function addProduct() {
     list.appendChild(item);
   });
 }
-  async function addProduct() {
+
+async function addProduct() {
   const name = document.getElementById("product-name").value.trim();
   const price = Number(document.getElementById("product-price").value);
   const description = document.getElementById("product-description").value.trim();
@@ -287,7 +287,6 @@ async function addProduct() {
 
   await loadProducts();
 }
-  
 window.addEventListener("DOMContentLoaded", checkAdminSession);
 
 </script>
