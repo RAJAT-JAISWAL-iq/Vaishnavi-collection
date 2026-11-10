@@ -126,17 +126,42 @@ async function loadProducts() {
 
     card.append(name, price, description);
 
- if (product.image_url) {
-  const img = document.createElement("img");
-  img.src = product.image_url;
-  img.alt = product.name;
+   
+const photos = Array.isArray(product.image_urls) && product.image_urls.length
+  ? product.image_urls
+  : (product.image_url ? [product.image_url] : []);
 
-  img.onerror = function() {
-    console.log("Image failed to load");
-  };
+if (photos.length > 0) {
+  const gallery = document.createElement("div");
 
-  card.prepend(img);
+  gallery.style.display = "flex";
+  gallery.style.overflowX = "auto";
+  gallery.style.scrollSnapType = "x mandatory";
+  gallery.style.gap = "6px";
+  gallery.style.width = "100%";
+
+  photos.forEach(photoUrl => {
+    const img = document.createElement("img");
+
+    img.src = photoUrl;
+    img.alt = product.name;
+    img.style.flex = "0 0 100%";
+    img.style.width = "100%";
+    img.style.height = "230px";
+    img.style.objectFit = "cover";
+    img.style.scrollSnapAlign = "start";
+    img.style.cursor = "zoom-in";
+
+    img.onclick = function() {
+      window.open(photoUrl, "_blank");
+    };
+
+    gallery.appendChild(img);
+  });
+
+  card.prepend(gallery);
 }
+
 
 // WhatsApp buttons
 const actions = document.createElement("div");
