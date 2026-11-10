@@ -342,7 +342,9 @@ async function addProduct() {
   const price = Number(document.getElementById("product-price").value);
   const description = document.getElementById("product-description").value.trim();
   const category = document.getElementById("product-category").value.trim();
-  const imageFile = document.getElementById("product-image").files[0];
+  const imageFiles = Array.from(
+  document.getElementById("product-image").files
+);
   const message = document.getElementById("product-message");
 
   if (!name || !price || !category) {
@@ -352,40 +354,51 @@ async function addProduct() {
 
   message.textContent = "Saving product...";
 
-  let imageUrl = null;
+  
+const imageUrls = [];
 
-  if (imageFile) {
-    const filePath = "products/" + Date.now() + "-" +
-      imageFile.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+if (imageFiles.length > 5) {
+  message.textContent = "Maximum 5 photos allowed.";
+  return;
+}
 
-    const { error: uploadError } = await supabaseClient
-      .storage
-      .from("Product -image")
-      .upload(filePath, imageFile);
+for (let i = 0; i < imageFiles.length; i++) {
+  const imageFile = imageFiles[i];
 
-    if (uploadError) {
-      message.textContent = "Image upload error: " + uploadError.message;
-      return;
-    }
+  const filePath =
+    "products/" + Date.now() + "-" + i + "-" +
+    imageFile.name.replace(/[^a-zA-Z0-9._-]/g, "_");
 
-    const { data: imageData } = supabaseClient
-      .storage
-      .from("Product -image")
-      .getPublicUrl(filePath);
+  const { error: uploadError } = await supabaseClient
+    .storage
+    .from("Product -image")
+    .upload(filePath, imageFile);
 
-    imageUrl = imageData.publicUrl;
+  if (uploadError) {
+    message.textContent = "Image upload error: " + uploadError.message;
+    return;
   }
+
+  const { data: imageData } = supabaseClient
+    .storage
+    .from("Product -image")
+    .getPublicUrl(filePath);
+
+  imageUrls.push(imageData.publicUrl);
+}
+    
 
   const { error } = await supabaseClient
     .from("products")
     .insert({
-      name: name,
-      price: price,
-      description: description,
-      category: category,
-      image_url: imageUrl,
-      is_active: true
-    });
+  name: name,
+  price: price,
+  description: description,
+  category: category,
+  image_url: imageUrls[0] || null,
+  image_urls: imageUrls,
+  is_active: true
+});
 
   if (error) {
     message.textContent = "Error: " + error.message;
