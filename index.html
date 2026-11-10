@@ -126,19 +126,65 @@ async function loadProducts() {
 
     card.append(name, price, description);
 
-    if (product.image_url) {
-      const img = document.createElement("img");
-img.src = product.image_url;
-img.alt = product.name;
+ if (product.image_url) {
+  const img = document.createElement("img");
+  img.src = product.image_url;
+  img.alt = product.name;
 
-img.onerror = function() {
-  console.log("Image failed to load");
-};
+  img.onerror = function() {
+    console.log("Image failed to load");
+  };
 
-card.prepend(img);
-    }
+  card.prepend(img);
+}
 
-    container.appendChild(card);
+// WhatsApp buttons
+const actions = document.createElement("div");
+actions.style.display = "flex";
+actions.style.gap = "8px";
+actions.style.marginTop = "12px";
+
+function makeWhatsAppButton(label, isBuy) {
+  const button = document.createElement("a");
+
+  const message = isBuy
+    ? `Namaste Vaishnavi Collection! I want to order this product.
+Product: ${product.name}
+Price: ₹${product.price}
+Product ID: ${product.id}
+Photo: ${product.image_url || "Please share product photo"}`
+    : `Namaste! I want to know more about this product.
+Product: ${product.name}
+Price: ₹${product.price}
+Product ID: ${product.id}
+Photo: ${product.image_url || "Please share product photo"}`;
+
+  button.href =
+    "https://wa.me/917388956709?text=" +
+    encodeURIComponent(message);
+
+  button.target = "_blank";
+  button.rel = "noopener noreferrer";
+  button.textContent = label;
+
+  button.style.flex = "1";
+  button.style.textAlign = "center";
+  button.style.padding = "10px 5px";
+  button.style.borderRadius = "6px";
+  button.style.textDecoration = "none";
+  button.style.color = "white";
+  button.style.fontSize = "13px";
+  button.style.background = isBuy ? "#9b7135" : "#168b55";
+
+  return button;
+}
+
+actions.appendChild(makeWhatsAppButton("WhatsApp", false));
+actions.appendChild(makeWhatsAppButton("Buy Now", true));
+
+card.appendChild(actions);
+
+container.appendChild(card); 
   });
 }
 
