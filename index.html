@@ -27,6 +27,7 @@ footer{padding:20px;text-align:center;background:#32111a;color:#e9d9c9;font:12px
 .wa{position:fixed;right:18px;bottom:18px;background:#168b55;color:white;text-decoration:none;padding:14px 18px;border-radius:30px;font: bold 13px Arial,sans-serif;box-shadow:0 5px 18px #0003;z-index:8}
 @media(max-width:760px){header{align-items:flex-start;flex-direction:column}nav{gap:14px}.hero{grid-template-columns:1fr}.hero-copy{padding:55px 25px}.hero-art{min-height:300px}.categories{grid-template-columns:repeat(2,1fr)}.product-grid{grid-template-columns:1fr 1fr}.product img{height:210px}}
 @media(max-width:460px){.product-grid{grid-template-columns:1fr}.product img{height:280px}}
+.cat{cursor:pointer}.cat.active{outline:2px solid var(--wine);background:#f2e7d9}
 </style>
 </head>
 <body>
@@ -48,10 +49,12 @@ footer{padding:20px;text-align:center;background:#32111a;color:#e9d9c9;font:12px
 <section id="collections">
   <div class="section-head"><span>OUR COLLECTIONS</span><h2>Style for Everyone</h2></div>
   <div class="categories">
-    <div class="cat"><b>Women</b><small>Ethnic & everyday wear</small></div>
-    <div class="cat"><b>Men</b><small>Classic & casual styles</small></div>
-    <div class="cat"><b>Kids</b><small>Comfortable little looks</small></div>
-    <div class="cat"><b>Festive Wear</b><small>Special occasion outfits</small></div>
+    <div class="categories">
+  <div class="cat" ...>Women...</div>
+  <div class="cat" ...>Men...</div>
+  <div class="cat" ...>Kids...</div>
+  <div class="cat" ...>Festive Wear...</div>
+</div>
   </div>
 </section>
 <section class="products" id="featured">
@@ -86,7 +89,16 @@ const supabaseClient = window.supabase.createClient(
     }
   }
 );
-  
+  let currentCategory = "all";
+
+function filterCategory(cat) {
+  currentCategory = currentCategory === cat ? "all" : cat;
+  document.querySelectorAll(".cat").forEach(c =>
+    c.classList.toggle("active", c.dataset.category === currentCategory)
+  );
+  loadProducts();
+  document.getElementById("featured").scrollIntoView({ behavior: "smooth" });
+}
 
 
 async function loadProducts() {
@@ -111,7 +123,16 @@ async function loadProducts() {
 
   container.innerHTML = "";
 
-  data.forEach(product => {
+const shown = currentCategory === "all"
+  ? data
+  : data.filter(p => (p.category || "").toLowerCase().trim().startsWith(currentCategory));
+
+if (shown.length === 0) {
+  container.textContent = "Is category mein abhi products nahi hain. WhatsApp par poochiye!";
+  return;
+}
+
+shown.forEach(product => {
     const card = document.createElement("article");
     card.className = "product";
 
