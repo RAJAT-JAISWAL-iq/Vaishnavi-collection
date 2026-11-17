@@ -161,7 +161,12 @@ const photos = Array.isArray(product.image_urls) && product.image_urls.length
   ? product.image_urls
   : (product.image_url ? [product.image_url] : []);
 
+
 if (photos.length > 0) {
+  const galleryWrap = document.createElement("div");
+  galleryWrap.style.position = "relative";
+  galleryWrap.style.width = "100%";
+
   const gallery = document.createElement("div");
 
   gallery.style.display = "flex";
@@ -169,6 +174,7 @@ if (photos.length > 0) {
   gallery.style.scrollSnapType = "x mandatory";
   gallery.style.gap = "6px";
   gallery.style.width = "100%";
+  gallery.style.scrollbarWidth = "none";
 
   photos.forEach(photoUrl => {
     const img = document.createElement("img");
@@ -189,8 +195,58 @@ if (photos.length > 0) {
     gallery.appendChild(img);
   });
 
-  card.prepend(gallery);
+  galleryWrap.appendChild(gallery);
+
+  if (photos.length > 1) {
+    const indicator = document.createElement("div");
+
+    indicator.style.position = "absolute";
+    indicator.style.bottom = "10px";
+    indicator.style.left = "0";
+    indicator.style.right = "0";
+    indicator.style.display = "flex";
+    indicator.style.justifyContent = "space-between";
+    indicator.style.alignItems = "center";
+    indicator.style.padding = "0 10px";
+    indicator.style.pointerEvents = "none";
+
+    const hint = document.createElement("span");
+    hint.textContent = "Swipe to see more →";
+    hint.style.background = "#4c1725dd";
+    hint.style.color = "#fffaf2";
+    hint.style.padding = "6px 10px";
+    hint.style.borderRadius = "20px";
+    hint.style.fontSize = "11px";
+
+    const counter = document.createElement("span");
+    counter.textContent = "1 / " + photos.length;
+    counter.style.background = "#4c1725dd";
+    counter.style.color = "#fffaf2";
+    counter.style.padding = "6px 10px";
+    counter.style.borderRadius = "20px";
+    counter.style.fontSize = "11px";
+
+    indicator.append(hint, counter);
+    galleryWrap.appendChild(indicator);
+
+    gallery.addEventListener("scroll", function() {
+      const slideWidth = gallery.clientWidth + 6;
+      const currentIndex = Math.min(
+        photos.length - 1,
+        Math.round(gallery.scrollLeft / slideWidth)
+      );
+
+      counter.textContent =
+        (currentIndex + 1) + " / " + photos.length;
+
+      hint.style.display =
+        currentIndex === photos.length - 1 ? "none" : "block";
+    });
+  }
+
+  card.prepend(galleryWrap);
 }
+
 
 
 // WhatsApp buttons
